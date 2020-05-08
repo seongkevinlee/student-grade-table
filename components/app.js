@@ -6,22 +6,16 @@ class App {
     this.handleGetGradesSuccess = this.handleGetGradesSuccess.bind(this);
     this.gradeForm = gradeForm;
     this.createGrade = this.createGrade.bind(this);
+    this.deleteGrade = this.deleteGrade.bind(this);
     this.handleCreateGradeError = this.handleCreateGradeError .bind(this);
     this.handleCreateGradeSuccess = this.handleCreateGradeSuccess.bind(this);
     this.handleDeleteGradeError = this.handleDeleteGradeError.bind(this);
     this.handleDeleteGradeSuccess = this.handleDeleteGradeSuccess.bind(this);
   }
-  handleGetGradesError(error) {
-    console.error(error);
-  }
-  handleGetGradesSuccess(grades) {
-    this.gradeTable.updateGrades(grades);
-    var total = 0;
-    for (var index = 0 ; index < grades.length ; index++){
-      total += grades[index].grade;
-      }
-    var average = Math.floor(total / grades.length);
-    this.pageHeader.updateAverage(average);
+  start(){
+    this.getGrades();
+    this.gradeForm.onSubmit(this.createGrade);
+    this.gradeTable.onDeleteClick(this.deleteGrade);
   }
   getGrades() {
     $.ajax({
@@ -32,9 +26,17 @@ class App {
       error: this.handleGetGradesError
       })
   }
-  start(){
-    this.getGrades();
-    this.gradeForm.onSubmit(this.createGrade);
+  handleGetGradesSuccess(grades) {
+    this.gradeTable.updateGrades(grades);
+    var total = 0;
+    for (var index = 0 ; index < grades.length ; index++){
+      total += grades[index].grade;
+      }
+    var average = Math.floor(total / grades.length);
+    this.pageHeader.updateAverage(average);
+  }
+  handleGetGradesError(error) {
+    console.error(error);
   }
 
   createGrade(name, course, grade) {
@@ -63,6 +65,14 @@ class App {
 
   deleteGrade(id) {
     console.log(id);
+    $.ajax({
+      method: "DELETE",
+      url: "https://sgt.lfzprototypes.com/api/grades/" + id,
+      data: "none",
+      headers: { "X-Access-Token": "5oM35U7P" },
+      success: this.handleDeleteGradeSuccess,
+      error: this.handleDeleteGradeError
+    })
   }
 
   handleDeleteGradeError(error) {
@@ -70,6 +80,7 @@ class App {
   }
 
   handleDeleteGradeSuccess() {
+    console.log(this.getGrades);
     this.getGrades();
   }
 }
