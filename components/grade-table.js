@@ -51,7 +51,7 @@ class GradeTable {
     course.textContent = data.course;
     grade.textContent = data.grade;
     deleteButton.textContent = "DELETE";
-    deleteButton.className = "btn btn-danger";
+    deleteButton.className = "btn btn-danger btn-text";
     deleteButton.addEventListener("click", function(){
       deleteGrade(data.id);
     })
